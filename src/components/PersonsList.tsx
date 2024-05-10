@@ -16,10 +16,10 @@ interface Resource {
 
 const PersonsList: React.FC = () => {
   const { persons, setPerson, setPersons }: any = useAppStore();
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
-  const perPageItems = 10;
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState<string>(""); // State variable for the search term, initialized as an empty string
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>(""); // State variable for the debounced search term, initialized as an empty string
+  const perPageItems = 10; // Number of items to display per page
+  const [currentPage, setCurrentPage] = useState(1); // State variable for the current page number, initialized as 1
   const { error, data, isFetching }: any = useQuery({
     queryKey: ["people", currentPage, debouncedSearchTerm],
     queryFn: () =>
@@ -32,14 +32,19 @@ const PersonsList: React.FC = () => {
           return res?.data;
         }),
   });
+  //  pagination logic
   const totalPage = Math.ceil(data?.count / perPageItems);
+  // useEffect hook to debounce the search term input
 
   useEffect(() => {
+    // Create a timeout to delay setting the debounced search term
     const delayInputTimeoutId = setTimeout(() => {
+      // Set the debounced search term after the delay
       setDebouncedSearchTerm(searchTerm);
     }, 500);
+    // Clean up the timeout to avoid memory leaks
     return () => clearTimeout(delayInputTimeoutId);
-  }, [searchTerm, 500]);
+  }, [searchTerm, 500]); //Run the effect whenever the search term changes
 
   return (
     <Box className="container">
@@ -78,7 +83,12 @@ const PersonsList: React.FC = () => {
                 {persons.map((item: any) => (
                   <tr key={item.name}>
                     <td>
-                      <Link to={`/person/${getIdFromUrl(item.url)}`} onClick={() => setPerson({})}>{item.name}</Link>
+                      <Link
+                        to={`/person/${getIdFromUrl(item.url)}`}
+                        onClick={() => setPerson({})}
+                      >
+                        {item.name}
+                      </Link>
                     </td>
                     <td>{item.birth_year}</td>
                     <td>{item.gender}</td>

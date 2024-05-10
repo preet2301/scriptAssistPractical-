@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import { Paper, Box, Text, Avatar, Group } from "@mantine/core"; // Import Mantine components
-
+import { Paper, Box, Text, Avatar, Group } from "@mantine/core";
 import { useAppStore } from "../store/app.store";
 import { useQuery } from "@tanstack/react-query";
 
@@ -22,6 +21,7 @@ interface Resource {
 function PersonDetail() {
   const { person, setPerson, homeWorld, setHomeWorld }: any = useAppStore();
   const { id }: any = useParams();
+  // Fetch person data using useQuery hook
   const { error, isFetching }: any = useQuery({
     queryKey: ["people", id],
     queryFn: () =>
@@ -30,27 +30,29 @@ function PersonDetail() {
         return res?.data;
       }),
   });
-
+ 
+  // Use useQuery hook to fetch homeworld data
   const {
-    error: errorHomeWorld,
-    isFetching: isFetchingHomeWorld,
-    refetch,
+    error: errorHomeWorld, // Error state for homeworld data
+    isFetching: isFetchingHomeWorld, // Loading state for homeworld data
+    refetch, // Function to refetch homeworld data
   }: any = useQuery({
     queryKey: ["homeworld", person],
     enabled: false,
     queryFn: () =>
-      axios.get(person.homeworld).then((res: any) => {
+      // Fetch homeworld data using Axios
+      axios.get(person?.homeworld).then((res: any) => {
         setHomeWorld(res?.data || {});
         return res?.data;
       }),
   });
 
+  // useEffect hook to refetch data when the person's homeworld changes
   useEffect(() => {
-    console.log(person);
-    if (person.homeworld) {
+    if (person?.homeworld) {
       refetch();
     }
-  }, [person]);
+  }, [person]); // Run the effect whenever the person object changes
 
   return (
     <Box p={"xl"}>
@@ -64,7 +66,7 @@ function PersonDetail() {
         {error && `Error: ${error?.message}`}
         {errorHomeWorld && `Error: ${errorHomeWorld?.message}`}
 
-        {person.name && (
+        {person?.name && (
           <>
             <Paper radius="md" withBorder p="lg" bg="var(--mantine-color-body)">
               <Group>
@@ -75,41 +77,41 @@ function PersonDetail() {
                 />
                 <div>
                   <Text fz="lg" fw={500}>
-                    {person.name}
+                    {person?.name}
                   </Text>
 
                   <Group mt={3}>
                     Gender
                     <Text fz="xs" c="dimmed">
-                      {person.gender}
+                      {person?.gender}
                     </Text>
                   </Group>
 
                   <Group mt={5}>
                     Hair Color
                     <Text fz="xs" c="dimmed">
-                      {person.hair_color}
+                      {person?.hair_color}
                     </Text>
                   </Group>
 
                   <Group mt={3}>
                     Skin Color
                     <Text fz="xs" c="dimmed">
-                      {person.skin_color}
+                      {person?.skin_color}
                     </Text>
                   </Group>
 
                   <Group mt={3}>
                     Eye Color
                     <Text fz="xs" c="dimmed">
-                      {person.eye_color}
+                      {person?.eye_color}
                     </Text>
                   </Group>
                 </div>
               </Group>
               <br />
             </Paper>
-            {homeWorld.name && (
+            {homeWorld?.name && (
               <Paper
                 radius="md"
                 withBorder
@@ -123,31 +125,31 @@ function PersonDetail() {
                 <Group mt={3}>
                   Name
                   <Text fz="xs" c="dimmed">
-                    {homeWorld.name}
+                    {homeWorld?.name}
                   </Text>
                 </Group>
                 <Group mt={3}>
                   Climate
                   <Text fz="xs" c="dimmed">
-                    {homeWorld.climate}
+                    {homeWorld?.climate}
                   </Text>
                 </Group>
                 <Group mt={3}>
                   Diameter
                   <Text fz="xs" c="dimmed">
-                    {homeWorld.diameter}
+                    {homeWorld?.diameter}
                   </Text>
                 </Group>
                 <Group mt={3}>
                   Rotation Period
                   <Text fz="xs" c="dimmed">
-                    {homeWorld.rotation_period}
+                    {homeWorld?.rotation_period}
                   </Text>
                 </Group>
                 <Group mt={3}>
                   Terrain
                   <Text fz="xs" c="dimmed">
-                    {homeWorld.terrain}
+                    {homeWorld?.terrain}
                   </Text>
                 </Group>
               </Paper>
